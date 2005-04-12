@@ -195,6 +195,9 @@ the data known about a test run accessible within.
 It's purpose is to ease the processing of test data, for the purpose of
 generating reports, or something like that.
 
+The niche it fills is creating a way to access test run data, both from a
+serialized and a real source, and to ease the querying of this data.
+
 =head1 TWO INTERFACES
 
 There are two ways to access the data in L<Test::TAP::Model>. The complex one,
