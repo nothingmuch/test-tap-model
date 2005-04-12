@@ -23,7 +23,6 @@ isa_ok(my $f = $m->new(my $file = {
 	],
 	results => my $r = {
 		passed => 0,
-		skip => 0,
 		max => 3,
 		seen => 2,
 	}
@@ -36,7 +35,7 @@ is($f->passed, $f->ok, "alias");
 is($f->failed, !$f->ok, "negation");
 
 ok(!$f->skipped, "not all skipped");
-$r->{skip} = 1;
+$r->{skip_all} = "reason";
 ok($f->skipped, "all skipped");
 
 is($f->max, 3, "3 planned");

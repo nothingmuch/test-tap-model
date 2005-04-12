@@ -17,7 +17,7 @@ isa_ok(my $s = $m->new(my $r = {
 	diag => "diagnosis",
 	reason => "foo",
 	pos => "foo at line 4, column 3",
-	result => "stringified",
+	str => "stringified",
 }), $m);
 
 ok($s->ok, "ok");

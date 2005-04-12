@@ -6,6 +6,8 @@ use base qw/Test::Harness::Straps/;
 use strict;
 use warnings;
 
+use Test::TAP::Model::File;
+
 # callback handlers
 sub _handle_bailout {
 	my($self, $line, $type, $totals) = @_;
@@ -30,21 +32,24 @@ sub _handle_test {
 		$pos = $2;
 	}
 
-	$self->log_event(
-		type   => 'test',
-		num    => $curr,
-		ok     => $totals->{details}[-1]{ok},
-		result => $totals->{details}[-1]{ok} # string for people
-					? "ok $curr/$totals->{max}"
-					: "NOK $curr",
-		todo   => ($line =~ /#\s*todo/i ? 1 : 0),
-		skip   => ($type eq 'skip'),
+	my %details = %{ $totals->{details}[-1] };
 
-		reason => $totals->{details}[-1]{reason}, # if at all
+	$self->log_event(
+		type      => 'test',
+		num       => $curr,
+		ok        => $details{ok},
+		actual_ok => $details{actual_ok},
+		str       => $details{ok} # string for people
+		             	? "ok $curr/$totals->{max}"
+		             	: "NOK $curr",
+		todo      => ($line =~ /#\s*todo/i ? 1 : 0),
+		skip      => ($type eq 'skip'),
+
+		reason    => $details{reason}, # if at all
 
 		# pugs aux stuff
-		line   => $line,
-		pos    => $pos,
+		line      => $line,
+		pos       => $pos,
 	);
 
 	if( $curr > $self->{'next'} ) {
@@ -162,6 +167,11 @@ sub start_file {
 	};
 
 	$test_file;
+}
+
+
+sub test_files {
+	map { Test::TAP::Model::File->new($_) } @{ $_[0]->{meat}{test_files} };
 }
 
 __PACKAGE__

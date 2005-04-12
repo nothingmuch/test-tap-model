@@ -18,13 +18,17 @@ sub new {
 	bless \$struct, $pkg; # don't bless the structure, it's not ours to mess with
 }
 
-sub str { ${ $_[0] }->{result} }
+sub str { ${ $_[0] }->{str} }
 
 # predicates about the case
 sub ok { ${ $_[0] }->{ok} }; *passed = \&ok;
 sub nok { !$_[0]->ok }; *failed = \&nok;
 sub skipped { ${ $_[0] }->{skip} }
 sub todo { ${ $_[0] }->{todo} }
+sub actual_ok { ${ $_[0] }->{actual_ok} }
+sub actual_nok { !$_[0]->actual_ok }
+sub normal { $_[0]->actual_ok xor $_[0]->todo }
+sub unexpected { !$_[0]->normal };
 
 # member data extraction
 sub diag { ${ $_[0] }->{diag} }
