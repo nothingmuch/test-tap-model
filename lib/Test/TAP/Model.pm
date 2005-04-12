@@ -7,63 +7,63 @@ use strict;
 use warnings;
 
 # callback handlers
-my %handlers = (
-    bailout => sub {
-        my($self, $line, $type, $totals) = @_;
+sub _handle_bailout {
+	my($self, $line, $type, $totals) = @_;
 
-		$self->log_event(
-			type => 'bailout',
-			($self->{bailout_reason} ?
-			 (reason => $self->{bailout_reason}) : ()),
-		);
+	$self->log_event(
+		type => 'bailout',
+		($self->{bailout_reason} ?
+		 (reason => $self->{bailout_reason}) : ()),
+	);
 
-		die "Bailed out";
-    },
-    test => sub {
-        my($self, $line, $type, $totals) = @_;
-        my $curr = $totals->{seen}||0;
+	die "Bailed out"; # catch with an eval { }
+}
+        
+sub _handle_test {
+	my($self, $line, $type, $totals) = @_;
+	 my $curr = $totals->{seen}||0;
 
-		# this is used by pugs' Test.pm, it's rather useful
-		my $pos;
-		if ($line =~ /^(.*?) <pos:(.*)>($|\s*#.*$)/){
-			$line = $1 . $3;
-			$pos = $2;
-		}
+	# this is used by pugs' Test.pm, it's rather useful
+	my $pos;
+	if ($line =~ /^(.*?) <pos:(.*)>($|\s*#.*$)/){
+		$line = $1 . $3;
+		$pos = $2;
+	}
 
-		$self->log_event(
-			type   => 'test',
-			num    => $curr,
-			ok     => $totals->{details}[-1]{ok},
-			result => $totals->{details}[-1]{ok} # string for people
-						? "ok $curr/$totals->{max}"
-						: "NOK $curr",
-			todo   => ($line =~ /# TODO/ ? 1 : 0),
+	$self->log_event(
+		type   => 'test',
+		num    => $curr,
+		ok     => $totals->{details}[-1]{ok},
+		result => $totals->{details}[-1]{ok} # string for people
+					? "ok $curr/$totals->{max}"
+					: "NOK $curr",
+		todo   => ($line =~ /# TODO/ ? 1 : 0),
 
-			# pugs aux stuff
-			line   => $line,
-			pos    => $pos,
-		);
+		# pugs aux stuff
+		line   => $line,
+		pos    => $pos,
+	);
 
-        if( $curr > $self->{'next'} ) {
-			$self->latest_event->{note} =
-				"Test output counter mismatch [test $curr]\n";
-        }
-        elsif( $curr < $self->{'next'} ) {
-            $self->latest_event->{note} = join("",
-				"Confused test output: test $curr answered after ",
-                          "test ", ($self->{'next'}||0) - 1, "\n");
-        }
-    },
-	other => sub {
-		my($self, $line, $type, $totals) = @_;
+	if( $curr > $self->{'next'} ) {
+		$self->latest_event->{note} =
+			"Test output counter mismatch [test $curr]\n";
+	}
+	elsif( $curr < $self->{'next'} ) {
+		$self->latest_event->{note} = join("",
+			"Confused test output: test $curr answered after ",
+					  "test ", ($self->{'next'}||0) - 1, "\n");
+	}
+}
 
-		if (@{ $self->{meat}{test_files} } > 0) {
-			$self->latest_event->{diag} .= $line;
-		} else {
-			($self->{meat}{test_files}[-1]{pre_diag} ||= "") .= $line;
-		}
-	 },
-);
+sub _handle_other {
+	my($self, $line, $type, $totals) = @_;
+
+	if (@{ $self->{meat}{test_files} } > 0) {
+		$self->latest_event->{diag} .= $line;
+	} else {
+		($self->{meat}{test_files}[-1]{pre_diag} ||= "") .= $line;
+	}
+}
 
 sub new_with_tests {
 	my $pkg = shift;
@@ -97,7 +97,8 @@ sub _init {
 	$s->{callback} = sub {
 		my($self, $line, $type, $totals) = @_;
 
-		$handlers{$type}->($self, $line, $type, $totals) if $handlers{$type};
+		my $meth = "_handle_$type";
+		$self->$meth($line, $type, $totals) if $self->can($meth);
 	};
 }
 
