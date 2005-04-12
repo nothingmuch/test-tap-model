@@ -31,6 +31,7 @@ sub normal { $_[0]->actual_ok xor $_[0]->todo }
 sub unexpected { !$_[0]->normal };
 
 # member data extraction
+sub num { ${ $_[0] }->{num} }
 sub diag { ${ $_[0] }->{diag} }
 sub line { ${ $_[0] }->{line} }
 sub reason { ${ $_[0] }->{reason} } # for skip or todo
