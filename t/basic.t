@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 20;
+use Test::More tests => 18;
 
 my $m;
 
@@ -47,6 +47,34 @@ is($f->{results}{seen}, 3, "total of three tests");
 is($f->{results}{ok}, 2, "two tests ok");
 ok(!$f->{results}{passed}, "file did not pass");
 
+# These will die in Test::TAP::Model
+eval '$t->get_tests()';
+ok($@, "Test::TAP::Model dies when calling get_tests()");
+eval '$t->run()';
+ok($@, "Test::TAP::Model dies when calling run()");
+
+# Try new_with_struct
+$s = $t->structure;
+my $t2 = Test::TAP::Model->new_with_struct($s);
+isa_ok($t2, $m);
+isa_ok($t2, "Test::Harness::Straps"); 
+
+# Try new_with_tests
+my $t3 = Test::TAP::Model->new_with_tests($s->{test_files});
+isa_ok($t3, $m);
+isa_ok($t3, "Test::Harness::Straps");
+
+# Call latest_event with a parameter
+my $t4 = new $m;
+isa_ok($t4, $m);
+isa_ok($t4, "Test::Harness::Straps");
+my %event = ();
+$event{type} = 'test';
+$event{todo} = 1;
+$t4->latest_event(%event);
+isa_ok(my $l = $t4->latest_event, "HASH");
+is_deeply([ sort keys %$l], [ sort qw/type todo/ ], 
+   "Test latest_event with parameters");
 
 __DATA__
 1..3

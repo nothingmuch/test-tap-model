@@ -120,8 +120,9 @@ sub log_event {
 }
 
 sub latest_event {
-	my($self) = @_;
-	$self->{events}[-1] || $self->log_event;
+	my($self) = shift;
+        my %event = @_;
+        $self->{events}[-1] || $self->log_event(%event);  
 }
 
 sub run {
