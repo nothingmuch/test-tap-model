@@ -52,12 +52,88 @@ __END__
 
 =head1 NAME
 
-Test::TAP::Model::Subtest - 
+Test::TAP::Model::Subtest - An object for querying a test case
 
 =head1 SYNOPSIS
 
-	use Test::TAP::Model::Subtest;
+	my @cases = $f->cases;
+	$case[0]->ok; # or whatever
 
 =head1 DESCRIPTION
+
+This object allows you to ask questions about a test case in a test file's
+output.
+
+=head1 METHODS
+
+=over 4
+
+=item ok
+
+=item passed
+
+Whether the test is logically OK - if it's TODO and not OK this returns true.
+
+=item actual_ok
+
+This is the real value from the output. not OK and todo is false here.
+
+=item nok
+
+=item failed
+
+The opposite of C<ok>
+
+=item actual_nok
+
+The opposite of C<actual_ok>
+
+=item skipped
+
+Whether the test was skipped
+
+=item todo
+
+Whether the test was todo
+
+=item normal
+
+Whether the result is consistent, that is OK xor TODO. An abnormal result
+should be noted.
+
+=item unexpected
+
+The negation of C<normal>
+
+=item num
+
+The number of the test (useful for when the test came from a filtered query).
+
+=item line
+
+The raw line the data was parsed from.
+
+=item diag
+
+Diagnosis immediately following the test line.
+
+=item reason
+
+If there was a reason (for skip or todo), it's here.
+
+=item pos
+
+=item test_file
+
+=item test_line
+
+=item test_column
+
+These methods extract the little C<< <pos:file.t at line 5, column 3> >>
+comments as outputted by pugs' Test.pm.
+
+Supposedly this is where the test case that fail was written.
+
+=back
 
 =cut
