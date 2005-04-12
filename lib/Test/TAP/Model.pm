@@ -37,7 +37,10 @@ sub _handle_test {
 		result => $totals->{details}[-1]{ok} # string for people
 					? "ok $curr/$totals->{max}"
 					: "NOK $curr",
-		todo   => ($line =~ /# TODO/ ? 1 : 0),
+		todo   => ($line =~ /#\s*todo/i ? 1 : 0),
+		skip   => ($type eq 'skip'),
+
+		reason => $totals->{details}[-1]{reason}, # if at all
 
 		# pugs aux stuff
 		line   => $line,
