@@ -18,6 +18,8 @@ sub _handle_bailout {
 		 (reason => $self->{bailout_reason}) : ()),
 	);
 
+	$self->{meat}{test_files}[-1]{results} = $totals;
+
 	die "Bailed out"; # catch with an eval { }
 }
         

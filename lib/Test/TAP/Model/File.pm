@@ -25,7 +25,7 @@ sub skipped { exists ${ $_[0] }->{results}{skip_all} };
 # utility methods for extracting tests.
 sub mk_objs { shift; wantarray ? map { Test::TAP::Model::Subtest->new($_) } @_ : @_ }
 sub _test_structs {
-	grep { $_->{type} = "test" } @{ ${ $_[0] }->{events} }
+	grep { $_->{type} eq "test" } @{ ${ $_[0] }->{events} }
 }
 sub _c {
 	my $self = shift;
