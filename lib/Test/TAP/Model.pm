@@ -29,7 +29,7 @@ sub _handle_test {
 
 	# this is used by pugs' Test.pm, it's rather useful
 	my $pos;
-	if ($line =~ /^(.*?) <pos:(.*)>($|\s*#.*$)/){
+	if ($line =~ /^(.*?) <pos:(.*)>(\r?$|\s*#.*\r?$)/){
 		$line = $1 . $3;
 		$pos = $2;
 	}
