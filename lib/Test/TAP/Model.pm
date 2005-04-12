@@ -23,7 +23,7 @@ sub _handle_bailout {
         
 sub _handle_test {
 	my($self, $line, $type, $totals) = @_;
-	 my $curr = $totals->{seen}||0;
+	my $curr = $totals->{seen}||0;
 
 	# this is used by pugs' Test.pm, it's rather useful
 	my $pos;
@@ -42,8 +42,8 @@ sub _handle_test {
 		str       => $details{ok} # string for people
 		             	? "ok $curr/$totals->{max}"
 		             	: "NOK $curr",
-		todo      => ($line =~ /#\s*todo/i ? 1 : 0),
-		skip      => ($type eq 'skip'),
+		todo      => ($details{type} eq 'todo'),
+		skip      => ($details{type} eq 'skip'),
 
 		reason    => $details{reason}, # if at all
 
