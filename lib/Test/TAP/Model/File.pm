@@ -1,8 +1,6 @@
 #!/usr/bin/perl
 
 package Test::TAP::Model::File;
-use base qw//;
-use fields qw//;
 
 use strict;
 use warnings;
