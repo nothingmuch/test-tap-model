@@ -184,7 +184,7 @@ sub test_files {
 
 sub total_ratio { $_[0]->total_passed / $_[0]->total_seen }; *ratio = \&total_ratio;
 sub total_percentage { sprintf("%.2f%%", 100 * $_[0]->total_ratio) }
-sub total_seen { sum map { scalar $_->cases } $_[0]->test_files }
+sub total_seen { sum map { scalar $_->seen } $_[0]->test_files }
 sub total_todo { sum map { scalar $_->todo_tests } $_[0]->test_files }
 sub total_skipped { sum map { scalar $_->skipped_tests } $_[0]->test_files }
 sub total_passed { sum map { scalar $_->ok_tests } $_[0]->test_files }
