@@ -7,6 +7,8 @@ use warnings;
 
 use Test::TAP::Model::Subtest;
 
+use overload '""' => "name";
+
 # TODO test this more thoroughly, probably with Devel::Cover
 
 sub new {
@@ -21,6 +23,8 @@ sub nok { !$_[0]->ok }; *failed = \&nok;
 sub bailed_out { die "todo" }
 sub skipped { exists ${ $_[0] }->{results}{skip_all} };
 
+# member data queries
+sub name { ${ $_[0] }->{file} }
 
 # utility methods for extracting tests.
 sub subtest_class { "Test::TAP::Model::Subtest" }
