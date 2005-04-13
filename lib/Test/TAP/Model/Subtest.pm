@@ -32,17 +32,17 @@ sub unexpected { !$_[0]->normal };
 
 # member data extraction
 sub num { ${ $_[0] }->{num} }
-sub diag { ${ $_[0] }->{diag} }
-sub line { ${ $_[0] }->{line} }
+sub diag { ${ $_[0] }->{diag} || ""}
+sub line { ${ $_[0] }->{line} || ""}
 sub reason { ${ $_[0] }->{reason} } # for skip or todo
 
 # pugs specific
-sub pos { ${ $_[0] }->{pos} }
+sub pos { ${ $_[0] }->{pos} || ""}
 
 # heuristical
-sub test_file { $_[0]->pos =~ /(?:file\s+|^)?(\S+)/ and $1 }; # maybe use Regexp::Common for quoted crap?
-sub test_line { $_[0]->pos =~ /line\s+(\d+)/i and $1 }
-sub test_column { $_[0]->pos =~ /column?\s+(\d+)/ and $1 }
+sub test_file { $_[0]->pos =~ /(?:file\s+|^)?(\S+)/ ? $1 : "" }; # maybe use Regexp::Common for quoted crap?
+sub test_line { $_[0]->pos =~ /line\s+(\d+)/i ? $1 : ""}
+sub test_column { $_[0]->pos =~ /column?\s+(\d+)/ ? $1 : ""}
 
 __PACKAGE__
 

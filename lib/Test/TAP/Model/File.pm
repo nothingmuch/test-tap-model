@@ -35,22 +35,29 @@ sub _test_structs {
 sub _c {
 	my $self = shift;
 	my $sub = shift;
+	return shift if not wantarray and @_; # if we have a precomputed scalar
 	$self->mk_objs(grep { &$sub } $self->_test_structs);
 }
 
 # queries about the test cases
 sub planned { ${ $_[0] }->{results}{max} }; *max = \&planned; # only scalar context
-sub cases {
-	wantarray
-		? $_[0]->mk_objs($_[0]->_test_structs)
-		: ${ $_[0] }->{results}{seen}
-}
-*seen = *test_cases = *subtests = \&cases;
 
-sub ok_tests { $_[0]->_c(sub { $_->{ok} and not $_->{skip} }) }; *passed_tests = \&ok_tests;
-sub nok_tests { $_[0]->_c(sub { !$_->{ok} }) }; *failed_tests = \&nok_tests;
-sub todo_tests { $_[0]->_c(sub { $_->{todo} }) }
-sub skipped_tests { $_->[0]->_c(sub { $_{skip} }) }
+sub cases { $_[0]->_c(sub { 1 }, ${ $_[0] }->{results}{seen}) }; *seen = *test_cases = *subtests = \&cases;
+sub ok_tests { $_[0]->_c(sub { $_->{ok} }, ${ $_[0] }->{results}{ok}) }; *passed_tests = \&ok_tests;
+sub nok_tests { $_[0]->_c(sub { !$_->{ok} }), ${ $_[0] }->{results}{seen} - ${ $_[0] }->{results}{ok}}; *failed_tests = \&nok_tests;
+sub todo_tests { $_[0]->_c(sub { $_->{todo} }, ${ $_[0] }->{results}{todo}) }
+sub skipped_tests { $_[0]->_c(sub { $_{skip} }, ${ $_[0] }->{results}{skip}) }
+sub unexpectedly_succeeded_tests { $_[0]->_c(sub { $_{todo} and $_{actual_ok} }) }
+
+sub ratio {
+	my $self = shift;
+	$self->ok_tests / $self->seen;
+}
+
+sub percentage {
+	my $self = shift;
+	sprintf("%.2f%%", 100 * $self->ratio);
+}
 
 __PACKAGE__
 

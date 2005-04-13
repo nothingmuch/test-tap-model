@@ -8,6 +8,8 @@ use warnings;
 
 use Test::TAP::Model::File;
 
+use List::Util qw/sum/;
+
 # callback handlers
 sub _handle_bailout {
 	my($self, $line, $type, $totals) = @_;
@@ -179,6 +181,15 @@ sub test_files {
 	$self->{_test_files_cache} ||= [ map { $self->file_class->new($_) } @{ $self->{meat}{test_files} } ];
 	@{ $self->{_test_files_cache} }
 }
+
+sub total_ratio { $_[0]->total_passed / $_[0]->total_seen }; *ratio = \&total_ratio;
+sub total_percentage { sprintf("%.2f%%", 100 * $_[0]->total_ratio) }
+sub total_seen { sum map { scalar $_->cases } $_[0]->test_files }
+sub total_todo { sum map { scalar $_->todo_tests } $_[0]->test_files }
+sub total_skipped { sum map { scalar $_->skipped_tests } $_[0]->test_files }
+sub total_passed { sum map { scalar $_->ok_tests } $_[0]->test_files }
+sub total_failed { sum map { scalar $_->nok_tests } $_[0]->test_files }
+sub total_unexpectedly_succeeded { sum map { scalar $_->unexpectedly_succeeded_tests } $_[0]->test_files }
 
 __PACKAGE__
 
