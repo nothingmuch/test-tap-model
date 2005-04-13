@@ -16,7 +16,7 @@ sub new {
 }
 
 # predicates about the test file
-sub ok { ${ $_[0] }->{results}{passed} }; *passed = \&ok;
+sub ok { ${ $_[0] }->{results}{passing} }; *passed = \&ok;
 sub nok { !$_[0]->ok }; *failed = \&nok;
 sub bailed_out { die "todo" }
 sub skipped { exists ${ $_[0] }->{results}{skip_all} };

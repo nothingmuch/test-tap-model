@@ -22,14 +22,16 @@ isa_ok(my $f = $m->new(my $file = {
 		},
 	],
 	results => my $r = {
-		passed => 0,
+		passing => 0,
+		ok => 10,
+		todo => 11,
 		max => 3,
 		seen => 2,
 	}
 }), $m);
 
 ok(!$f->ok, "failed");
-$r->{passed} = 1;
+$r->{passing} = 1;
 ok($f->ok, "passed");
 is($f->passed, $f->ok, "alias");
 is($f->failed, !$f->ok, "negation");
