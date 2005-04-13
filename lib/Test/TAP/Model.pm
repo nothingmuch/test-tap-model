@@ -172,9 +172,12 @@ sub start_file {
 	$test_file;
 }
 
+sub file_class { "Test::TAP::Model::File" }	
 
 sub test_files {
-	map { Test::TAP::Model::File->new($_) } @{ $_[0]->{meat}{test_files} };
+	my $self = shift;
+	$self->{_test_files_cache} ||= [ map { $self->file_class->new($_) } @{ $self->{meat}{test_files} } ];
+	@{ $self->{_test_files_cache} }
 }
 
 __PACKAGE__
