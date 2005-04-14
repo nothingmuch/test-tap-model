@@ -6,6 +6,7 @@ use strict;
 use warnings;
 
 use Test::TAP::Model::Subtest;
+use List::Util (); # don't import max, we have our own. We use it fully qualified
 
 use overload '""' => "name";
 
@@ -34,7 +35,34 @@ sub name { ${ $_[0] }->{file} }
 sub subtest_class { "Test::TAP::Model::Subtest" }
 sub mk_objs { my $self = shift; wantarray ? map { $self->subtest_class->new($_) } @_ : @_ }
 sub _test_structs {
-	grep { exists $_->{type} and $_->{type} eq "test" } @{ ${ $_[0] }->{events} }
+	my $self = shift;
+	my $max = ${ $self }->{results}{max};
+
+	# cases is an array of *copies*... that's what the map is about
+	my @cases = grep { exists $_->{type} and $_->{type} eq "test" } @{ ${ $self }->{events} };
+
+	if (defined $max){
+		if ($max > @cases){
+			# add failed stubs for tests missing from plan
+			my %bailed = (
+				type => "test",
+				ok => 0,
+				line => "Bail out!",
+			);
+
+			for my $num (@cases + 1 .. $max) {
+				push @cases, { %bailed, num => $num };
+			}
+		} elsif (@cases > $max) {
+			# mark extra tests as unplanned
+			my $diff = @cases - $max;
+			for (my $i = $diff; $i; $i--){
+				$cases[-$i]{unplanned} = 1;
+			}	
+		}
+	}
+
+	@cases;
 }
 sub _c {
 	my $self = shift;
@@ -47,7 +75,11 @@ sub _c {
 # queries about the test cases
 sub planned { ${ $_[0] }->{results}{max} }; *max = \&planned; # only scalar context
 
-sub cases { $_[0]->_c(sub { 1 }, ${ $_[0] }->{results}{seen}) }; *seen = *test_cases = *subtests = \&cases;
+sub cases {
+	my @values = @{ ${ $_[0] }->{results} }{qw/seen max/};
+	my $scalar = List::Util::max(@values);
+	$_[0]->_c(sub { 1 }, $scalar)
+}; *seen = *test_cases = *subtests = \&cases;
 sub ok_tests { $_[0]->_c(sub { $_->{ok} }, ${ $_[0] }->{results}{ok}) }; *passed_tests = \&ok_tests;
 sub nok_tests { $_[0]->_c(sub { !$_->{ok} }), $_[0]->seen - $_[0]->ok_tests}; *failed_tests = \&nok_tests;
 sub todo_tests { $_[0]->_c(sub { $_->{todo} }, ${ $_[0] }->{results}{todo}) }
