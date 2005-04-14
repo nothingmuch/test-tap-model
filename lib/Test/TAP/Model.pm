@@ -184,7 +184,7 @@ sub test_files {
 	@{ $self->{_test_files_cache} }
 }
 
-sub total_ratio { $_[0]->total_passed / $_[0]->total_seen }; *ratio = \&total_ratio;
+sub total_ratio { return $_ ? $_[0]->total_passed / $_ : 1 for $_[0]->total_seen }; *ratio = \&total_ratio;
 sub total_percentage { sprintf("%.2f%%", 100 * $_[0]->total_ratio) }
 sub total_seen { sum map { scalar $_->seen } $_[0]->test_files }
 sub total_todo { sum map { scalar $_->todo_tests } $_[0]->test_files }
