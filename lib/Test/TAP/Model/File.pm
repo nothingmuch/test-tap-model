@@ -30,7 +30,7 @@ sub name { ${ $_[0] }->{file} }
 sub subtest_class { "Test::TAP::Model::Subtest" }
 sub mk_objs { my $self = shift; wantarray ? map { $self->subtest_class->new($_) } @_ : @_ }
 sub _test_structs {
-	grep { $_->{type} eq "test" } @{ ${ $_[0] }->{events} }
+	grep { exists $_->{type} and $_->{type} eq "test" } @{ ${ $_[0] }->{events} }
 }
 sub _c {
 	my $self = shift;
