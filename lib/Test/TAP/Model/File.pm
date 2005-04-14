@@ -20,8 +20,12 @@ sub new {
 # predicates about the test file
 sub ok { ${ $_[0] }->{results}{passing} }; *passed = \&ok;
 sub nok { !$_[0]->ok }; *failed = \&nok;
-sub bailed_out { die "todo" }
 sub skipped { exists ${ $_[0] }->{results}{skip_all} };
+sub bailed_out {
+	my $event = ${ $_[0] }->{events}[-1] or return;
+	return unless exists $event->{type};
+	return $event->{type} ne "bailout";
+}
 
 # member data queries
 sub name { ${ $_[0] }->{file} }
