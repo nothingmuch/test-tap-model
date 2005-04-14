@@ -119,6 +119,8 @@ sub log_event {
 	my %event = @_;
 
 	push @{ $self->{events} }, \%event;
+
+	\%event;
 }
 
 sub latest_event {
