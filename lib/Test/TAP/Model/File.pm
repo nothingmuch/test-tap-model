@@ -33,7 +33,7 @@ sub name { ${ $_[0] }->{file} }
 
 # utility methods for extracting tests.
 sub subtest_class { "Test::TAP::Model::Subtest" }
-sub mk_objs { my $self = shift; wantarray ? map { $self->subtest_class->new($_) } @_ : @_ }
+sub _mk_objs { my $self = shift; wantarray ? map { $self->subtest_class->new($_) } @_ : @_ }
 sub _test_structs {
 	my $self = shift;
 	my $max = ${ $self }->{results}{max};
@@ -69,7 +69,7 @@ sub _c {
 	my $sub = shift;
 	my $scalar = shift;
 	return $scalar if not wantarray and defined $scalar; # if we have a precomputed scalar
-	$self->mk_objs(grep { &$sub } $self->_test_structs);
+	$self->_mk_objs(grep { &$sub } $self->_test_structs);
 }
 
 # queries about the test cases
