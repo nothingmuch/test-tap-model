@@ -42,7 +42,7 @@ sub reason { ${ $_[0] }->{reason} } # for skip or todo
 sub pos { ${ $_[0] }->{pos} || ""}
 
 # heuristical
-sub test_file { $_[0]->pos =~ /(?:file\s+|^)?(\S+)/ ? $1 : "" }; # maybe use Regexp::Common for quoted crap?
+sub test_file { $_[0]->pos =~ /(?:file\s+|^)?(\S+?)[\s[:punct:]]*(?:\s+|$)/ ? $1 : "" };
 sub test_line { $_[0]->pos =~ /line\s+(\d+)/i ? $1 : ""}
 sub test_column { $_[0]->pos =~ /column?\s+(\d+)/ ? $1 : ""}
 
