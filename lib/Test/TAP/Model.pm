@@ -18,8 +18,10 @@ sub _handle_bailout {
 
 	$self->log_event(
 		type => 'bailout',
-		($self->{bailout_reason} ?
-		 (reason => $self->{bailout_reason}) : ()),
+		($self->{bailout_reason}
+			? (reason => $self->{bailout_reason})
+			: ()
+		),
 	);
 
 	$self->{meat}{test_files}[-1]{results} = $totals;
