@@ -70,6 +70,14 @@ output.
 
 =over 4
 
+=item new
+
+This constructor accepts the hash reference to the event logged for this
+subtest.
+
+It doesn't bless the hash itself, but rather a reference to it, so that other
+objects' feet aren't stepped on.
+
 =item ok
 
 =item passed
@@ -135,6 +143,12 @@ These methods extract the little C<< <pos:file.t at line 5, column 3> >>
 comments as outputted by pugs' Test.pm.
 
 Supposedly this is where the test case that fail was written.
+
+=item str
+
+A stringy representation much like L<Test::Harness> prints in it's output:
+
+	(?:not )?ok $num/$planned
 
 =back
 

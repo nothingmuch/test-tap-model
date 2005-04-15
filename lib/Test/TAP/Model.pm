@@ -257,8 +257,7 @@ When it's ready, that is.
 
 =head1 HASH STRUCTURE
 
-I hope this illustrates how the structure looks. Read it top down, but pretend
-it's evalled bottom up.
+I hope this illustrates how the structure looks.
 
 	$structure = {
 		test_files => $test_files,
@@ -305,5 +304,215 @@ it's evalled bottom up.
 	];
 
 That's basically it.
+
+=head1 OBJECT INTERFACE
+
+The object interface is structured around three objects:
+
+=over 4
+
+=item L<Test::TAP::Model>
+
+A whole run
+
+=item L<Test::TAP::Model::File>
+
+A test script
+
+=item L<Test::TAP::Model::Subtest>
+
+A single case in a test script
+
+=back
+
+Each of these is discussed in it's respectful manpage. Here's the whole run:
+
+=head1 METHODS
+
+=head2 The said OOP interface
+
+=over 4
+
+=item test_files
+
+Returns a list of L<Test::TAP::Model::File> objects.
+
+=item ok
+
+=item passing
+
+=item passed
+
+=item nok
+
+=item failed
+
+=item failing
+
+Whether all the suite was OK, or opposite.
+
+=item total_ok
+
+=item total_passed
+
+=item total_nok
+
+=item total_failed
+
+=item total_percentage
+
+=item total_ratio
+
+=item total_seen
+
+=item total_skipped
+
+=item total_todo
+
+=item total_unexpectedly_succeeded
+
+These methods are all rather self explanatory and either provide aggregate
+results based on the contained test files.
+
+=item ratio
+
+An alias to total_ratio.
+
+=back
+
+=head2 Misc methods
+
+=over 4
+
+=item new
+
+Creates an empty harness.
+
+=item new_with_struct $struct
+
+Adopts a structure. This is how you take a thawed structure and query it.
+
+=item new_with_tests @tests
+
+Takes a list of tests and immediately runs them.
+
+=item get_tests
+
+A method invoked by C<run> to get a list of tests to run.
+
+This is a stub, and you should subclass it if you care.
+
+=item run
+
+This method runs the list of tests returned by C<get_tests>.
+
+=item run_tests @tests
+
+Runs these tests. Just loops, and calls analyze file, with an eval { } around
+it to catch bail out.
+
+=item run_test $test
+
+Actually this is the part which does eval and calls C<start_file> and
+C<analyze_file>
+
+=item start_file
+
+This tells L<Test::TAP::Model> that we are about to analyze a new file.
+
+This will eventually be moved into an overridden version of analyze, I think.
+
+Consider it's existence a bug.
+
+=item log_event
+
+This logs a new event with time stamp in the event log for the current test.
+
+=item latest_event
+
+Returns the hash ref to the last event, or a new one if there isn't a last
+event yet.
+
+=item file_class
+
+This method returns the class to call new on, when generating file objects in
+C<test_files>.
+
+=item structure
+
+This method returns the hash reference you can save, browse, or use to create
+new objects with the same date.
+
+
+
+=back
+
+=head1 SERIALIZING
+
+You can use any serializer you like (L<YAML>, L<Storable>, etc), to freeze C<<
+$obj->structure >>, and then you can thaw it back, and pass the thawed
+structure to C<new_with_struct>.
+
+You can then access the object interface normally.
+
+This behavior is guaranteed to remain consistent, at least between similar
+versions of this module. This is there to simplify smoke reports.
+
+=head1 ISA Test::Harness::Straps
+
+L<Test::TAP::Model> is a L<Test::Harness::Straps> subclass. It knows to run
+tests on it's own. See the C<run> methods and it's friends.
+
+However, you should see how C<run_test> gets things done beforehand. It's a bit
+of a hack because I'm not quite sure if L<Test::Harness::Straps> has the proper
+events to encapsulate this cleanly (Gaal took care of the handlers way before I
+got into the picture), and I'm too lazy to check it out.
+
+=head1 AUTHORS
+
+This list was generated from svn log testgraph.pl and testgraph.css in the pugs
+repo, sorted by last name.
+
+=over 4
+
+=item *
+
+Michal Jurosz
+
+=item *
+
+Yuval Kogman <nothingmuch@woobling.org> NUFFIN
+
+=item *
+
+Max Maischein <corion@cpan.org> CORION
+
+=item *
+
+James Mastros <james@mastros.biz> JMASTROS
+
+=item *
+
+Scott McWhirter <scott-cpan@NOSPAMkungfuftr.com> KUNGFUFTR
+
+=item *
+
+putter (svn handle)
+
+=item *
+
+Autrijs Tang <autrijus@autrjius.org> AUTRIJUS
+
+=item *
+
+Gaal Yahas <gaal@forum2.org> GAAL
+
+=back
+
+=head1 COPYRIGHT & LICNESE
+
+	Copyright (c) 2005 the aforementioned authors. All rights
+	reserved. This program is free software; you can redistribute
+	it and/or modify it under the same terms as Perl itself.
 
 =cut

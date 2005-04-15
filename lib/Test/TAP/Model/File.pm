@@ -127,6 +127,25 @@ kit.
 
 =head1 METHODS
 
+=head2 Miscelleneous
+
+=over 4
+
+=item new
+
+This constructor accepts a hash like you can find in the return value of
+L<Test::TAP::Model/structure>.
+
+It does not bless that structure to stay friendly with others. Instead it
+blesses a scalar reference to it.
+
+=item subtest_class
+
+This returns the name of the class used to construct subtest objects using
+methods like L<ok_tests>.
+
+=back
+
 =head2 Predicates About the File
 
 =over 4
@@ -153,6 +172,18 @@ Whether test bailed out
 
 =back
 
+=head2 Misc info
+
+=over 4
+
+=item name
+
+The name of the test file.
+
+=item
+
+=back
+
 =head2 Methods for Extracting Subtests
 
 =over 4
@@ -163,9 +194,12 @@ Whether test bailed out
 
 =item test_cases
 
+=item seen_tests
+
 =item seen
 
-In scalar context, a number, in list context, a list of L<Test::TAP::Model::Subtest> objects
+In scalar context, a number, in list context, a list of
+L<Test::TAP::Model::Subtest> objects
 
 =item max
 
@@ -183,7 +217,7 @@ Subtests which passed
 
 =item failed_tests
 
-Duh.
+Duh. Same list/scalar context sensitivity applies.
 
 =item todo_tests
 
@@ -193,6 +227,23 @@ Subtests marked TODO.
 
 Test which are vegeterian.
 
+=item unexpectedly_succeeded_tests
+
+Please tell me you're not really reading these decriptions. The're really only
+to get the =items sepeared in whatever POD viewer you are using.
+
 =back
+
+=head2 Statistical goodness
+
+=over 4
+
+=item ratio
+
+OK/(max seen, planned)
+
+=item percentage
+
+Pretty printed ratio in percentage, with two decimal points and a percent sign.
 
 =cut
