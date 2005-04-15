@@ -73,7 +73,7 @@ $event{type} = 'test';
 $event{todo} = 1;
 $t4->latest_event(%event);
 isa_ok(my $l = $t4->latest_event, "HASH");
-is_deeply([ sort keys %$l], [ sort qw/type todo/ ], 
+is_deeply([ sort keys %$l], [ sort qw/type todo time/ ], 
    "Test latest_event with parameters");
 
 __DATA__

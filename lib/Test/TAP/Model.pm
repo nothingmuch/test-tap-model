@@ -116,7 +116,7 @@ sub _init {
 
 sub log_event {
 	my $self = shift;
-	my %event = @_;
+	my %event = (time => time, @_);
 
 	push @{ $self->{events} }, \%event;
 
@@ -256,6 +256,9 @@ it's evalled bottom up.
 
 	$structure = {
 		test_files => $test_files,
+
+		start_time => # when the run started
+		end_time   => # ... and ended
 	};
 
 	$test_files = [
@@ -285,6 +288,8 @@ it's evalled bottom up.
 
 			# pugs auxillery stuff, from the <pos:> comment
 			pos    => # the place in the test file the case is in
+
+			time   => # the time this event happenned
 		},
 		{
 			type => "bailout",
