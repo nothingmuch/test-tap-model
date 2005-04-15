@@ -236,6 +236,11 @@ generating reports, or something like that.
 The niche it fills is creating a way to access test run data, both from a
 serialized and a real source, and to ease the querying of this data.
 
+=head1 YEAH YEAH, WHAT IS IT GOOD FOR?
+
+Well, you can use it to send test results, and process them into pretty
+reports. See L<Test::TAP::HTMLMatrix>.
+
 =head1 TWO INTERFACES
 
 There are two ways to access the data in L<Test::TAP::Model>. The complex one,
