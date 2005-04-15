@@ -27,7 +27,7 @@ sub skipped { exists ${ $_[0] }->{results}{skip_all} };
 sub bailed_out {
 	my $event = ${ $_[0] }->{events}[-1] or return;
 	return unless exists $event->{type};
-	return $event->{type} ne "bailout";
+	return $event->{type} eq "bailout";
 }
 
 # member data queries
