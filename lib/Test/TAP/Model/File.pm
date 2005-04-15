@@ -79,12 +79,12 @@ sub cases {
 	my @values = @{ ${ $_[0] }->{results} }{qw/seen max/};
 	my $scalar = List::Util::max(@values);
 	$_[0]->_c(sub { 1 }, $scalar)
-}; *seen = *test_cases = *subtests = \&cases;
+}; *seen_tests = *seen = *test_cases = *subtests = \&cases;
 sub ok_tests { $_[0]->_c(sub { $_->{ok} }, ${ $_[0] }->{results}{ok}) }; *passed_tests = \&ok_tests;
-sub nok_tests { $_[0]->_c(sub { !$_->{ok} }), $_[0]->seen - $_[0]->ok_tests}; *failed_tests = \&nok_tests;
+sub nok_tests { $_[0]->_c(sub { not $_->{ok} }, $_[0]->seen - $_[0]->ok_tests )}; *failed_tests = \&nok_tests;
 sub todo_tests { $_[0]->_c(sub { $_->{todo} }, ${ $_[0] }->{results}{todo}) }
-sub skipped_tests { $_[0]->_c(sub { $_{skip} }, ${ $_[0] }->{results}{skip}) }
-sub unexpectedly_succeeded_tests { $_[0]->_c(sub { $_{todo} and $_{actual_ok} }) }
+sub skipped_tests { $_[0]->_c(sub { $_->{skip} }, ${ $_[0] }->{results}{skip}) }
+sub unexpectedly_succeeded_tests { $_[0]->_c(sub { $_->{todo} and $_->{actual_ok} }) }
 
 sub ratio {
 	my $self = shift;
