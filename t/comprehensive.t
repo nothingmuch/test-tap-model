@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More tests => 81;
+use Test::More tests => 93;
 
 use strict;
 use warnings;
@@ -29,8 +29,13 @@ ok 1 foo # skip cause i said so
 ok 2 bar
 TAP
 
+	ok($s->ok, "suite OK");
+	
 	is($s->test_files, 1, "one file");
 	isa_ok(my $f = ($s->test_files)[0], "Test::TAP::Model::File");
+
+	ok($f->ok, "file is ok");
+	ok(!$f->bailed_out, "file did not bail out");
 
 	is(my @cases = $f->cases, 2, "two subtests");
 	ok($cases[0]->ok, "1 ok");
@@ -54,6 +59,7 @@ TAP
 
 	ok(!$s->ok, "whole run is not ok");
 	ok(!$f->ok, "file is not ok");
+	ok($f->bailed_out, "file bailed out");
 	ok($cases[0]->ok, "first case is ok");
 	ok(!$cases[1]->ok, "but not second");
 }
@@ -134,6 +140,7 @@ TAP2
 
 	is($s->total_ratio, 5/6, "total ratio");
 	is($s->ratio, $s->total_ratio, "ratio alias also works");
+	is($files[0]->percentage, "50.00%", "percentage of file");
 	like($s->total_percentage, qr/^\d+(?:\.\d+)?%$/, "percentage is well formatted");
 
 	my %expected = (
@@ -155,6 +162,37 @@ TAP2
 		is($s->$smeth, sum(@{ $expected{$method} }), "total $method");
 	}
 }
+
+
+{
+	my $s = strap_this(no_plan => <<TAP);
+ok 1
+ok 2
+ok 3
+TAP
+	
+	ok(!$s->ok, "suite isn't ok yet");
+	my $f = ($s->test_files)[0];
+	is($f->planned, 0, "no tests planned");
+	is($f->seen, 3, "but 3 tests seen");
+}
+
+{
+	my $s = strap_this(plan_at_end => <<TAP);
+ok 1
+ok 2
+ok 3
+1..3
+TAP
+	
+	ok($s->ok, "suite ok");
+	my $f = ($s->test_files)[0];
+	is($f->planned, 3, "plan at end registered");
+	is($f->seen, 3, "but 3 tests seen");
+
+	like(($f->test_cases)[0]->str, qr{1/0}, "str contains 1/0");
+}
+
 
 
 
