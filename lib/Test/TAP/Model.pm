@@ -162,7 +162,7 @@ sub run_test {
 
 	my $test_file = $self->start_file($file);
 	
-	my %results = $self->analyze_file($file);
+	my %results = eval { $self->analyze_file($file) };
 	$test_file->{results} = \%results;
 
 	$test_file;
@@ -188,7 +188,7 @@ sub test_files {
 	@{ $self->{_test_files_cache} }
 }
 
-sub ok { $_->ok or return for $_[0]->test_files; 1 }; *passing = \&ok; *passing = \&ok;
+sub ok { $_->ok or return for $_[0]->test_files; 1 }; *passed = \&ok; *passing = \&ok;
 sub nok { !$_[0]->ok }; *failing = \&nok; *failed = \&nok;
 sub total_ratio { return $_ ? $_[0]->total_passed / $_ : 1 for $_[0]->total_seen }; *ratio = \&total_ratio;
 sub total_percentage { sprintf("%.2f%%", 100 * $_[0]->total_ratio) }
