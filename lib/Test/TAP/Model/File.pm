@@ -10,7 +10,7 @@ use List::Util (); # don't import max, we have our own. We use it fully qualifie
 
 use overload '""' => "name";
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 # TODO test this more thoroughly, probably with Devel::Cover
 
