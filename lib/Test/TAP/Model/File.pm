@@ -90,7 +90,7 @@ sub unexpectedly_succeeded_tests { $_[0]->_c(sub { $_->{todo} and $_->{actual_ok
 
 sub ratio {
 	my $self = shift;
-	$self->ok_tests / $self->seen;
+	$self->seen ? $self->ok_tests / $self->seen : 0; # no tests is an error
 }
 
 sub percentage {
