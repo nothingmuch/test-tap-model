@@ -31,6 +31,8 @@ sub actual_ok { ${ $_[0] }->{actual_ok} }
 sub actual_nok { !$_[0]->actual_ok }
 sub normal { $_[0]->actual_ok xor $_[0]->todo }
 sub unexpected { !$_[0]->normal };
+sub unplanned { ${ $_[0] }->{unplanned} }
+sub planned { !$_[0]->unplanned }
 
 # member data extraction
 sub num { ${ $_[0] }->{num} }
@@ -114,6 +116,14 @@ should be noted.
 =item unexpected
 
 The negation of C<normal>
+
+=item planned
+
+Whether this test is within the plan declared by the file.
+
+=item unplanned
+
+Maybe it's in love with another fish.
 
 =item num
 

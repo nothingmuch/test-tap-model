@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More tests => 95;
+use Test::More tests => 101;
 
 use strict;
 use warnings;
@@ -196,7 +196,21 @@ TAP
 	like(($f->test_cases)[0]->str, qr{1/0}, "str contains 1/0");
 }
 
-
+{
+	my $s = strap_this(bad_plan => <<TAP);
+1..2
+ok 1
+ok 2
+ok 3
+TAP
+	ok(!$s->ok, "suite not ok");
+	my $f = ($s->test_files)[0];
+	is($f->planned, 2, "two planned");
+	is($f->actual_cases, 3, "actually seen 3");
+	is($f->cases, 3, "seen 3");
+	ok(($f->cases)[0]->planned, "case 1 was planned");
+	ok(($f->cases)[2]->unplanned, "case 3 was unplanned");
+}
 
 
 sub strap_this {
