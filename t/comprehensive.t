@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More tests => 101;
+use Test::More tests => 108;
 
 use strict;
 use warnings;
@@ -116,6 +116,9 @@ TAP
 
 	ok($f->skipped, "whole file was skipped");
 	is($f->cases, 0, "no test cases");
+
+	is($f->ratio, 1, "ratio for file is 1");
+	is($s->ratio, 1, "for suite too");
 }
 
 {
@@ -212,6 +215,19 @@ TAP
 	ok(($f->cases)[2]->unplanned, "case 3 was unplanned");
 }
 
+{
+	my $s = strap_this(bail_no_tests => <<TAP);
+1..10
+Bail out!
+TAP
+	ok($s->nok, "suite not ok");
+	my $f = ($s->test_files)[0];
+	is($f->actual_cases, 0, "no cases in file");
+	ok($f->bailed_out, "it bailed out");
+
+	is($f->ratio, 0, "file ratio is 0");
+	is($s->ratio, 0, "suite ratio is 0");
+}
 
 sub strap_this {
 	my $s = $m->new;

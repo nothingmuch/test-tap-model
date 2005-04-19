@@ -190,7 +190,7 @@ sub test_files {
 
 sub ok { $_->ok or return for $_[0]->test_files; 1 }; *passed = \&ok; *passing = \&ok;
 sub nok { !$_[0]->ok }; *failing = \&nok; *failed = \&nok;
-sub total_ratio { return $_ ? $_[0]->total_passed / $_ : 1 for $_[0]->total_seen }; *ratio = \&total_ratio;
+sub total_ratio { return $_ ? $_[0]->total_passed / $_ : ($_[0]->ok ? 1 : 0) for $_[0]->total_seen }; *ratio = \&total_ratio;
 sub total_percentage { sprintf("%.2f%%", 100 * $_[0]->total_ratio) }
 sub total_seen { sum map { scalar $_->seen } $_[0]->test_files }
 sub total_todo { sum map { scalar $_->todo_tests } $_[0]->test_files }
