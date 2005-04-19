@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More tests => 93;
+use Test::More tests => 95;
 
 use strict;
 use warnings;
@@ -62,6 +62,9 @@ TAP
 	ok($f->bailed_out, "file bailed out");
 	ok($cases[0]->ok, "first case is ok");
 	ok(!$cases[1]->ok, "but not second");
+
+	is($f->actual_cases, 1, "1 test, actually");
+	is_deeply([ $f->actual_cases ], [ $cases[0] ], "no stubs");
 }
 
 {
