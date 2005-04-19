@@ -99,6 +99,8 @@ sub percentage {
 	sprintf("%.2f%%", 100 * $self->ratio);
 }
 
+sub pre_diag { ${ $_[0] }->{pre_diag} || ""}
+
 __PACKAGE__
 
 __END__
@@ -254,5 +256,9 @@ OK/(max seen, planned)
 =item percentage
 
 Pretty printed ratio in percentage, with two decimal points and a percent sign.
+
+=item pre_diag
+
+Any diagnosis output seen in TAP that came before a subtest.
 
 =cut

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More tests => 108;
+use Test::More tests => 113;
 
 use strict;
 use warnings;
@@ -36,6 +36,8 @@ TAP
 
 	ok($f->ok, "file is ok");
 	ok(!$f->bailed_out, "file did not bail out");
+
+	is($f->pre_diag, "", "no pre diag");
 
 	is(my @cases = $f->cases, 2, "two subtests");
 	ok($cases[0]->ok, "1 ok");
@@ -92,16 +94,16 @@ TAP
 	ok($cases[0]->normal, "normal");
 	ok(!$cases[1]->ok, "2 nok -> nok");
 	ok(!$cases[1]->todo, "not todo");
-	ok(!$cases[1]->actual_ok, "actual nok");
+	ok($cases[1]->actual_nok, "actual nok");
 	ok(!$cases[1]->normal, "not normal");
-	ok($cases[2]->ok, "3 nok todo -> ok") or diag "line: '" . $cases[2]->line . "'";
+	ok($cases[2]->ok, "3 nok todo -> ok");
 	ok($cases[2]->todo, "todo");
 	ok(!$cases[2]->actual_ok, "actual nok");
 	ok($cases[2]->normal, "normal");
 	ok($cases[3]->ok, "4 ok todo -> ok");
 	ok($cases[3]->todo, "todo");
 	ok($cases[3]->actual_ok, "actual ok");
-	ok(!$cases[3]->normal, "not normal");
+	ok($cases[3]->unexpected, "not normal");
 }
 
 {
@@ -227,6 +229,25 @@ TAP
 
 	is($f->ratio, 0, "file ratio is 0");
 	is($s->ratio, 0, "suite ratio is 0");
+}
+
+{
+	my $s = strap_this(diag => <<TAP);
+1..1
+# before
+# one
+ok 1
+# after
+# two
+TAP
+
+	ok($s->ok, "suite is OK");
+	my $f = ($s->test_files)[0];
+	is($f->pre_diag, "# before\n# one\n", "diagnosis before tests");
+
+	is($f->cases, 1, "one case");
+	my $c = ($f->cases)[0];
+	is($c->diag, "# after\n# two\n", "diagnosis belonging to case 1");
 }
 
 sub strap_this {

@@ -74,10 +74,11 @@ sub _handle_test {
 sub _handle_other {
 	my($self, $line, $type, $totals) = @_;
 
-	if (@{ $self->{meat}{test_files} } > 0) {
-		$self->latest_event->{diag} .= $line;
+	my $last_test = $self->{meat}{test_files}[-1];
+	if (@{ $last_test->{events} ||= [] } > 0) {
+		($self->latest_event->{diag} ||= "") .= "$line\n";
 	} else {
-		($self->{meat}{test_files}[-1]{pre_diag} ||= "") .= $line;
+		($last_test->{pre_diag} ||= "") .= "$line\n";
 	}
 }
 
