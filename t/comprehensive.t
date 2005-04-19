@@ -132,7 +132,7 @@ ok 4 bah # skip blah
 TAP2
 
 	is($s->test_files, 2, "two test files");
-	ok(!$s->ok, "suite as a whole is not ok");
+	ok($s->nok, "suite as a whole is not ok");
 
 	my @files = $s->test_files;
 	ok(!$files[0]->ok, "first file not ok");
