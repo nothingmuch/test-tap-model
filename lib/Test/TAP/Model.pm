@@ -119,9 +119,15 @@ sub _init {
 	};
 }
 
+sub log_time {
+	my $self = shift;
+	$self->{log_time} = shift if @_;
+	$self->{log_time};
+}
+
 sub log_event {
 	my $self = shift;
-	my %event = (time => time, @_);
+	my %event = (($self->log_time ? (time => time) : ()), @_);
 
 	push @{ $self->{events} }, \%event;
 
@@ -449,7 +455,10 @@ C<test_files>.
 This method returns the hash reference you can save, browse, or use to create
 new objects with the same date.
 
+=item log_time
 
+This is an accessor. If it's value is set to true, any events logged will have
+a time stamp added.
 
 =back
 
