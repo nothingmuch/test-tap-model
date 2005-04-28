@@ -171,6 +171,7 @@ sub run_test {
 	
 	my %results = eval { $self->analyze_file($file) };
 	$test_file->{results} = \%results;
+	delete $test_file->{results}{details};
 
 	$test_file;
 }
