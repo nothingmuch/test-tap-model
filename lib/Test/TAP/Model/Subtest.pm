@@ -9,8 +9,6 @@ use overload '""' => "str";
 
 use Carp qw/croak/;
 
-our $VERSION = "0.01";
-
 sub new {
 	my $pkg = shift;
 	my $struct = shift;
