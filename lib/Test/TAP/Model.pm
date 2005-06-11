@@ -220,7 +220,7 @@ for L<Test::Harness::Straps> runs.
 
 =head1 SYNOPSIS
 
-	use Test::TAP::Model
+	use Test::TAP::Model;
 
 	my $t = Test::TAP::Model->new($structure);
 
