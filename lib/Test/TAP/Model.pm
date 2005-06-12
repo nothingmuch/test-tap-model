@@ -222,13 +222,28 @@ for L<Test::Harness::Straps> runs.
 
 	use Test::TAP::Model;
 
-	my $t = Test::TAP::Model->new($structure);
+	my $t = Test::TAP::Model->new();
 
-	my @tests = $t->test_files; # objects interface
+	# Test::Harness::Straps methods are available, but they aren't enough.
+	# Extra book keeping is required. See the run_test method
 
-	YAML::Dump($t->structure); # the same thing we made it with
+	# here's a convenient wrapper
+	$t = Test::TAP::Model->new_with_tests(glob("t/*.t"));
+	
+	# that's shorthand for new->run_tests
+	$t->run_tests(qw{ t/foo.t t/bar.t });
 
-	$t->run_tests(qw{ t/foo.t t/bar.t }); # has a side effect of creating struct
+	# every file is an object (Test::TAP::Model::File)
+	my @tests = $t->test_files;
+
+	# this method returns a structure
+	my $structure = $t->structure;
+
+	# which is guaranteed to survive serialization
+	my $other_struct = do { my $VAR; eval Data::Dumper::Dumper($structure) };
+
+	# the same as $t1
+	my $t2 = Test::TAP::Model->new_with_struct($other_struct);
 
 =head1 DESCRIPTION
 
