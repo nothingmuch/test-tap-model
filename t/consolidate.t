@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 11;
+use Test::More tests => 13;
 
 use lib "t/lib";
 use StringHarness;
@@ -30,7 +30,8 @@ TAP
 	my $f = ($c->test_files)[0];
 	is($f->ok_tests, 4, "4 passing subtests");
 	is($f->cases, 4, "4 subtests altogether");
-	is($f->ratio, 1, "ok/nok ratio is 1:1")
+	is($f->ratio, 1, "ok/nok ratio is 1:1");
+	ok($f->consistent, "composite file is consistent");
 }
 
 {
@@ -49,5 +50,6 @@ TAP
 	my $f = ($c->test_files)[0];
 	is($f->ok_tests, 3, "3 passing subtests");
 	is($f->cases, 4, "4 subtests altogether");
-	is($c->ratio, 3/4, "ok/nok ratio is 3:4");
+	is($f->ratio, 3/4, "ok/nok ratio is 3:4");
+	ok(!$f->consistent, "composite file is not consistent");
 }

@@ -8,7 +8,7 @@ use warnings;
 use Test::TAP::Model::Subtest;
 use List::Util (); # don't import max, we have our own. We use it fully qualified
 
-use overload '""' => "name";
+use overload '""' => "name", '==' => "equal";
 
 use Method::Alias (
 	(map { ($_ => 'cases') } qw/seen_tests seen test_cases subtests/),
@@ -107,6 +107,24 @@ sub percentage {
 }
 
 sub pre_diag { ${ $_[0] }->{pre_diag} || ""}
+
+sub equal {
+	my $self = shift;
+	my $other = shift;
+
+	# number of sub-tests
+	return unless $self->seen == $other->seen;
+
+	# values of subtests
+	my @self = $self->cases;
+	my @other = $other->cases;
+
+	while (@self) {
+		return unless (pop @self) == (pop @other);
+	}
+
+	1;
+}
 
 __PACKAGE__
 

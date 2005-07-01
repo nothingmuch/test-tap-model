@@ -5,7 +5,7 @@ package Test::TAP::Model::Subtest;
 use strict;
 use warnings;
 
-use overload '""' => "str";
+use overload '""' => "str", '==' => "equal";
 
 use Carp qw/croak/;
 
@@ -45,6 +45,17 @@ sub pos { ${ $_[0] }->{pos} || ""}
 sub test_file { $_[0]->pos =~ /(?:file\s+|^)?(\S+?)[\s[:punct:]]*(?:\s+|$)/ ? $1 : "" };
 sub test_line { $_[0]->pos =~ /line\s+(\d+)/i ? $1 : ""}
 sub test_column { $_[0]->pos =~ /column?\s+(\d+)/ ? $1 : ""}
+
+sub equal {
+	my $self = shift;
+	my $other = shift;
+
+	($self->actual_ok xor $other->actual_nok)
+		and
+	($self->skipped xor !$other->skipped)
+		and
+	($self->todo xor !$other->todo)
+}
 
 __PACKAGE__
 

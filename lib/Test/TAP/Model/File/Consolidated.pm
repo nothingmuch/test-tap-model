@@ -66,6 +66,17 @@ sub subfiles {
 	@$self;
 }
 
+sub consistent {
+	my $self = shift;
+
+	my ($head, @tail) = $self->subfiles;
+	foreach my $tail (@tail) {
+		return unless $head == $tail;
+	}
+
+	1;
+}
+
 __PACKAGE__;
 
 __END__
