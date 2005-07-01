@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 22;
 
 use lib "t/lib";
 use StringHarness;
@@ -52,4 +52,19 @@ TAP
 	is($f->cases, 4, "4 subtests altogether");
 	is($f->ratio, 3/4, "ok/nok ratio is 3:4");
 	ok(!$f->consistent, "composite file is not consistent");
+
+	is($f->subfiles, 2, "composite file has 2 subfiles");
+	my @sub = $f->subfiles;
+	is($sub[0]->cases, 2, "two cases in first");
+	is($sub[0]->ratio, 1/2, "50% success in first");
+	is($sub[1]->cases, 2, "two cases in second");
+	is($sub[1]->ratio, 1, "100% success in first");
+
+	my @fcases = $sub[0]->cases;
+	ok($fcases[0]->ok, "first subcase of first is OK");
+	ok($fcases[1]->nok, "second subcase of first is not OK");
+
+	my @scases = $sub[1]->cases;
+	ok($scases[0]->ok, "first subcase of second is OK");
+	ok($scases[1]->ok, "second subcase of second is OK");
 }
