@@ -10,21 +10,21 @@ use List::Util ();
 
 sub new {
 	my $pkg = shift;
-	bless [ @_ ], $pkg;
+	bless { subfiles => [ @_ ]}, $pkg;
 }
 
 sub concat_aggr {
 	my $self = shift;
 	my $method = shift;
 
-	wantarray ? (map { $_->$method } @$self) : List::Util::sum(map { scalar $_->$method } @$self);
+	wantarray ? (map { $_->$method } $self->subfiles) : List::Util::sum(map { scalar $_->$method } $self->subfiles);
 }
 
 sub boolean_aggr {
 	my $self = shift;
 	my $method = shift;
 
-	$_->$method || return for (@$self);
+	$_->$method || return for ($self->subfiles);
 	return 1;
 
 }
@@ -58,12 +58,22 @@ BEGIN {
 
 sub name {
 	my $self = shift; # currently broken, until _transpose_arrays is fixed
-	$self->[0]->name
+	$self->first_file->name;
 }
 
 sub subfiles {
 	my $self = shift;
-	@$self;
+	@{$self->{subfiles}};
+}
+
+sub subfile_count {
+	my $self = shift;
+	scalar $self->subfiles;
+}
+
+sub first_file {
+	my $self = shift;
+	($self->subfiles)[0];
 }
 
 sub consistent {
