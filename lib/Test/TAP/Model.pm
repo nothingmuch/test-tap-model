@@ -211,6 +211,15 @@ sub total_passed { sum map { scalar $_->ok_tests } $_[0]->test_files }; *total_o
 sub total_failed { sum map { scalar $_->nok_tests } $_[0]->test_files }; *total_nok = \&total_failed;
 sub total_unexpectedly_succeeded { sum map { scalar $_->unexpectedly_succeeded_tests } $_[0]->test_files }
 
+sub summary {
+	my $self = shift;
+	$self->{_summary} ||=
+	sprintf "%d test cases: %d ok, %d failed, %d todo, "
+			."%d skipped and %d unexpectedly succeeded",
+			map { my $m = "total_$_"; $self->$m }
+			qw/seen passed failed todo skipped unexpectedly_succeeded/;
+}
+
 __PACKAGE__
 
 __END__
