@@ -10,7 +10,7 @@ use Test::TAP::Model::File;
 
 use List::Util qw/sum/;
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 
 # callback handlers
 sub _handle_bailout {
@@ -192,8 +192,12 @@ sub file_class { "Test::TAP::Model::File" }
 
 sub test_files {
 	my $self = shift;
-	$self->{_test_files_cache} ||= [ map { $self->file_class->new($_) } @{ $self->{meat}{test_files} } ];
-	@{ $self->{_test_files_cache} }
+	@{$self->{_test_files_cache} ||= [ $self->get_test_files ]};
+}
+
+sub get_test_files {
+	my $self = shift;
+	map { $self->file_class->new($_) } @{ $self->{meat}{test_files} };
 }
 
 sub ok { $_->ok or return for $_[0]->test_files; 1 }; *passed = \&ok; *passing = \&ok;

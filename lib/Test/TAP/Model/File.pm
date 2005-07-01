@@ -10,6 +10,15 @@ use List::Util (); # don't import max, we have our own. We use it fully qualifie
 
 use overload '""' => "name";
 
+use Method::Alias (
+	(map { ($_ => 'cases') } qw/seen_tests seen test_cases subtests/),
+	(map { ($_ => 'ok_tests') } qw/passed_tests/),
+	(map { ($_ => 'nok_tests') } qw/failed_tests/),
+	(map { ($_ => 'planned') } qw/max/),
+	(map { ($_ => 'ok') } qw/passed/),
+	(map { ($_ => 'nok') } qw/failed/),
+);
+
 # TODO test this more thoroughly, probably with Devel::Cover
 
 sub new {
@@ -19,8 +28,8 @@ sub new {
 }
 
 # predicates about the test file
-sub ok { ${ $_[0] }->{results}{passing} }; *passed = \&ok;
-sub nok { !$_[0]->ok }; *failed = \&nok;
+sub ok { ${ $_[0] }->{results}{passing} };
+sub nok { !$_[0]->ok };
 sub skipped { exists ${ $_[0] }->{results}{skip_all} };
 sub bailed_out {
 	my $event = ${ $_[0] }->{events}[-1] or return;
@@ -73,16 +82,16 @@ sub _c {
 }
 
 # queries about the test cases
-sub planned { ${ $_[0] }->{results}{max} }; *max = \&planned; # only scalar context
+sub planned { ${ $_[0] }->{results}{max} };
 
 sub cases {
 	my @values = @{ ${ $_[0] }->{results} }{qw/seen max/};
 	my $scalar = List::Util::max(@values);
 	$_[0]->_c(sub { 1 }, $scalar)
-}; *seen_tests = *seen = *test_cases = *subtests = \&cases;
+};
 sub actual_cases { $_[0]->_c(sub { $_->{line} ne "stub" }, ${ $_[0] }->{results}{seen}) }
-sub ok_tests { $_[0]->_c(sub { $_->{ok} }, ${ $_[0] }->{results}{ok}) }; *passed_tests = \&ok_tests;
-sub nok_tests { $_[0]->_c(sub { not $_->{ok} }, $_[0]->seen - $_[0]->ok_tests )}; *failed_tests = \&nok_tests;
+sub ok_tests { $_[0]->_c(sub { $_->{ok} }, ${ $_[0] }->{results}{ok}) };
+sub nok_tests { $_[0]->_c(sub { not $_->{ok} }, $_[0]->seen - $_[0]->ok_tests )};
 sub todo_tests { $_[0]->_c(sub { $_->{todo} }, ${ $_[0] }->{results}{todo}) }
 sub skipped_tests { $_[0]->_c(sub { $_->{skip} }, ${ $_[0] }->{results}{skip}) }
 sub unexpectedly_succeeded_tests { $_[0]->_c(sub { $_->{todo} and $_->{actual_ok} }) }

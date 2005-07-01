@@ -12,6 +12,7 @@ Module::Build->new(
 	},
 	build_requires => {
 		'Test::More' => "0.53",
+		'Method::Alias' => "0",
 	},
 	create_makefile_pl => 'traditional',
 	sign => 1,

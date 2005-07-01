@@ -7,6 +7,9 @@ use warnings;
 
 use List::Util qw/sum/;
 
+use lib "t/lib";
+use StringHarness;
+
 my $m;
 BEGIN { use_ok($m = "Test::TAP::Model") };
 
@@ -23,7 +26,7 @@ sub c_is (&$$){ # like Test::More::is, but in two contexts
 }
 
 {
-	my $s = strap_this(skip_some => <<TAP);
+	my $s = strap_this($m, skip_some => <<TAP);
 1..2
 ok 1 foo # skip cause i said so
 ok 2 bar
@@ -48,7 +51,7 @@ TAP
 }
 
 {
-	my $s = strap_this(bail_out => <<TAP);
+	my $s = strap_this($m, bail_out => <<TAP);
 1..2
 ok 1 foo
 Bail out!
@@ -70,7 +73,7 @@ TAP
 }
 
 {
-	my $s = strap_this(todo_tests => <<TAP);
+	my $s = strap_this($m, todo_tests => <<TAP);
 1..4
 ok 1 foo
 not ok 2 bar
@@ -107,7 +110,7 @@ TAP
 }
 
 {
-	my $s = strap_this(skip_all => <<TAP);
+	my $s = strap_this($m, skip_all => <<TAP);
 1..0 # skipped: dancing beavers
 TAP
 
@@ -124,7 +127,7 @@ TAP
 }
 
 {
-	my $s = strap_this(totals_1 => <<TAP1, totals_2 => <<TAP2);
+	my $s = strap_this($m, totals_1 => <<TAP1, totals_2 => <<TAP2);
 1..2
 ok 1 foo
 not ok 2 bar
@@ -173,7 +176,7 @@ TAP2
 
 
 {
-	my $s = strap_this(no_plan => <<TAP);
+	my $s = strap_this($m, no_plan => <<TAP);
 ok 1
 ok 2
 ok 3
@@ -186,7 +189,7 @@ TAP
 }
 
 {
-	my $s = strap_this(plan_at_end => <<TAP);
+	my $s = strap_this($m, plan_at_end => <<TAP);
 ok 1
 ok 2
 ok 3
@@ -202,7 +205,7 @@ TAP
 }
 
 {
-	my $s = strap_this(bad_plan => <<TAP);
+	my $s = strap_this($m, bad_plan => <<TAP);
 1..2
 ok 1
 ok 2
@@ -218,7 +221,7 @@ TAP
 }
 
 {
-	my $s = strap_this(bail_no_tests => <<TAP);
+	my $s = strap_this($m, bail_no_tests => <<TAP);
 1..10
 Bail out!
 TAP
@@ -232,7 +235,7 @@ TAP
 }
 
 {
-	my $s = strap_this(diag => <<TAP);
+	my $s = strap_this($m, diag => <<TAP);
 1..1
 # before
 # one
@@ -250,17 +253,3 @@ TAP
 	is($c->diag, "# after\n# two\n", "diagnosis belonging to case 1");
 }
 
-sub strap_this {
-	my $s = $m->new;
-
-	while (@_){
-		my $name = shift;
-		my $output = shift;
-		$output = [split /\n/,$output];
-
-		my $r = $s->start_file($name);
-		eval { $r->{results} = { $s->analyze($name, $output) } };
-	}
-
-	return $s;
-}
