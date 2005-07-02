@@ -39,7 +39,7 @@ sub _transpose_arrays {
 		push @result, [];
 
 		foreach my $arr (@arrays) {
-			push @{$result[-1]}, $arr->[0];
+			push @{$result[-1]}, $arr->[$i];
 		}
 	}
 
