@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Test::More tests => 113;
+use Test::More tests => 122;
 
 use strict;
 use warnings;
@@ -253,3 +253,19 @@ TAP
 	is($c->diag, "# after\n# two\n", "diagnosis belonging to case 1");
 }
 
+
+{
+	my $s = strap_this($m, empty => <<TAP);
+TAP
+
+	ok($s->nok, "suite is not OK");
+	is($s->ratio, 0, "ratio is 0");
+	is($s->total_percentage, "0.00%", "zero percent");
+	is($s->test_files, 1, "one file");
+	my $f = ($s->test_files)[0];
+	ok($f->nok, "file is not OK");
+	is($f->cases, 0, "no cases");
+	is($f->planned, 0, "no plan either");
+	is($f->ratio, 0, "ratio is 0");
+	is($f->percentage, "0.00%", "zero percent");
+}
