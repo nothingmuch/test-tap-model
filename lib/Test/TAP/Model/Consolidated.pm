@@ -14,10 +14,30 @@ sub new {
 	bless { _submodels => [ @_ ] }, $pkg;
 }
 
+sub submodels {
+	my $self = shift;
+	@{$self->{_submodels}};
+}
+
+sub submodels_ref {
+	my $self = shift;
+	[ $self->submodels ];
+}
+
+sub submodel_count {
+	my $self = shift;
+	scalar $self->submodels;
+}
+
+sub submodel_count_plus_one {
+	my $self = shift;
+	$self->submodel_count + 1;
+}
+
 sub file_class { "Test::TAP::Model::File::Consolidated" }
 sub get_test_files {
 	my $self = shift;
-	my @files = map { [ $_->test_files ] } @{$self->{_submodels}};
+	my @files = map { [ $_->test_files ] } $self->submodels;
 	map { $self->file_class->new(@$_) } _transpose_arrays(@files);
 }
 

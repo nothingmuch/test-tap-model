@@ -66,11 +66,25 @@ sub subfiles {
 	@{$self->{subfiles}};
 }
 
+sub subfiles_ref {
+	my $self = shift;
+	[ $self->subfiles ];
+}
+
 sub subfile_count {
 	my $self = shift;
 	scalar $self->subfiles;
 }
 
+sub subfile_count_plus_one {
+	my $self = shift;
+	$self->subfile_count + 1;
+}
+
+sub multiple_files {
+	my $self = shift;
+	$self->subfile_count > 1;
+}
 sub first_file {
 	my $self = shift;
 	($self->subfiles)[0];
@@ -80,8 +94,9 @@ sub consistent {
 	my $self = shift;
 
 	my ($head, @tail) = $self->subfiles;
+
 	foreach my $tail (@tail) {
-		return unless $head == $tail;
+		return undef unless $head == $tail;
 	}
 
 	1;
