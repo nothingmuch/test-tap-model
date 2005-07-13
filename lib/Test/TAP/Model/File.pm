@@ -24,31 +24,31 @@ use Method::Alias (
 sub new {
 	my $pkg = shift;
 	my $struct = shift;
-	bless \$struct, $pkg; # don't bless the structure, it's not ours to mess with
+	bless { struct => $struct }, $pkg; # don't bless the structure, it's not ours to mess with
 }
 
 # predicates about the test file
-sub ok { ${ $_[0] }->{results}{passing} };
+sub ok { $_[0]{struct}{results}{passing} };
 sub nok { !$_[0]->ok };
-sub skipped { exists ${ $_[0] }->{results}{skip_all} };
+sub skipped { exists $_[0]{struct}{results}{skip_all} };
 sub bailed_out {
-	my $event = ${ $_[0] }->{events}[-1] or return;
+	my $event = $_[0]{struct}{events}[-1] or return;
 	return unless exists $event->{type};
 	return $event->{type} eq "bailout";
 }
 
 # member data queries
-sub name { ${ $_[0] }->{file} }
+sub name { $_[0]{struct}{file} }
 
 # utility methods for extracting tests.
 sub subtest_class { "Test::TAP::Model::Subtest" }
 sub _mk_objs { my $self = shift; wantarray ? map { $self->subtest_class->new($_) } @_ : @_ }
 sub _test_structs {
 	my $self = shift;
-	my $max = ${ $self }->{results}{max};
+	my $max = $self->{struct}{results}{max};
 
 	# cases is an array of *copies*... that's what the map is about
-	my @cases = grep { exists $_->{type} and $_->{type} eq "test" } @{ ${ $self }->{events} };
+	my @cases = grep { exists $_->{type} and $_->{type} eq "test" } @{ $self->{struct}{events} };
 
 	if (defined $max){
 		if ($max > @cases){
@@ -82,18 +82,18 @@ sub _c {
 }
 
 # queries about the test cases
-sub planned { ${ $_[0] }->{results}{max} };
+sub planned { $_[0]{struct}{results}{max} };
 
 sub cases {
-	my @values = @{ ${ $_[0] }->{results} }{qw/seen max/};
+	my @values = @{ $_[0]{struct}{results} }{qw/seen max/};
 	my $scalar = List::Util::max(@values);
 	$_[0]->_c(sub { 1 }, $scalar)
 };
-sub actual_cases { $_[0]->_c(sub { $_->{line} ne "stub" }, ${ $_[0] }->{results}{seen}) }
-sub ok_tests { $_[0]->_c(sub { $_->{ok} }, ${ $_[0] }->{results}{ok}) };
+sub actual_cases { $_[0]->_c(sub { $_->{line} ne "stub" }, $_[0]{struct}{results}{seen}) }
+sub ok_tests { $_[0]->_c(sub { $_->{ok} }, $_[0]{struct}{results}{ok}) };
 sub nok_tests { $_[0]->_c(sub { not $_->{ok} }, $_[0]->seen - $_[0]->ok_tests )};
-sub todo_tests { $_[0]->_c(sub { $_->{todo} }, ${ $_[0] }->{results}{todo}) }
-sub skipped_tests { $_[0]->_c(sub { $_->{skip} }, ${ $_[0] }->{results}{skip}) }
+sub todo_tests { $_[0]->_c(sub { $_->{todo} }, $_[0]{struct}{results}{todo}) }
+sub skipped_tests { $_[0]->_c(sub { $_->{skip} }, $_[0]{struct}{results}{skip}) }
 sub unexpectedly_succeeded_tests { $_[0]->_c(sub { $_->{todo} and $_->{actual_ok} }) }
 
 sub ratio {
@@ -106,7 +106,7 @@ sub percentage {
 	sprintf("%.2f%%", 100 * $self->ratio);
 }
 
-sub pre_diag { ${ $_[0] }->{pre_diag} || ""}
+sub pre_diag { $_[0]{struct}{pre_diag} || ""}
 
 sub equal {
 	my $self = shift;
