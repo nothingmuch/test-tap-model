@@ -10,7 +10,7 @@ use Test::TAP::Model::File;
 
 use List::Util qw/sum/;
 
-our $VERSION = "0.05";
+our $VERSION = "0.06";
 
 # callback handlers
 sub _handle_bailout {
