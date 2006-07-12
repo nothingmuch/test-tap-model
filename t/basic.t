@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 30;
+use Test::More tests => 35;
 
 my $m;
 
@@ -36,9 +36,19 @@ ok(!$e[0]->{diag}, "no diagnosis");
 
 is($e[1]{type}, "test", "second event is a test");
 ok(!$e[1]->{ok}, "it failed");
+like($e[1]->{diag}, qr/expected/, "it has diagnosis");
 
 is($e[2]{type}, "test", "third event is a test");
 ok($e[2]{todo}, "it's a todo test");
+like($e[1]->{diag}, qr/expected/, "it has diagnosis");
+
+
+is( scalar($t->test_files), 1, "one test file" );
+my $f_obj = ($t->test_files)[0];
+
+is( ( $f_obj->subtests )[0]->diag, "", "first subtest has no diag" );
+like( ( $f_obj->subtests )[1]->diag, qr/expected/, "second subtest does have diag" );
+
 
 
 # this is the return from analyze_foo
@@ -52,6 +62,7 @@ eval '$t->get_tests()';
 ok($@, "Test::TAP::Model dies when calling get_tests()");
 eval '$t->run()';
 ok($@, "Test::TAP::Model dies when calling run()");
+
 
 # Try new_with_struct
 $s = $t->structure;
