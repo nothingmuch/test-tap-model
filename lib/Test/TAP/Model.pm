@@ -512,6 +512,12 @@ of a hack because I'm not quite sure if L<Test::Harness::Straps> has the proper
 events to encapsulate this cleanly (Gaal took care of the handlers way before I
 got into the picture), and I'm too lazy to check it out.
 
+=head1 VERSION CONTROL
+
+This module is maintained using Darcs. You can get the latest version from
+L<http://nothingmuch.woobling.org/Test-TAP-Model/>, and use C<darcs send> to
+commit changes.
+
 =head1 AUTHORS
 
 This list was generated from svn log testgraph.pl and testgraph.css in the pugs
