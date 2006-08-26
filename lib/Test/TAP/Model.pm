@@ -551,7 +551,7 @@ putter (svn handle)
 
 =item *
 
-Autrijs Tang <autrijus@autrjius.org> AUTRIJUS
+Audrey Tang <cpan@audreyt.org> AUDREYT
 
 =item *
 
