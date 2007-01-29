@@ -15,7 +15,7 @@ isa_ok($t, "Test::Harness::Straps");
 can_ok($t, "start_file");
 my $e = $t->start_file("example");
 
-$e->{results} = { $t->analyze_fh("example", \*DATA) };
+$e->{results} = $t->analyze_fh("example", \*DATA);
 
 isa_ok(my $s = $t->structure, "HASH");
 

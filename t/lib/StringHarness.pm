@@ -17,7 +17,7 @@ sub strap_this {
 		$output = [split /\n/,$output];
 
 		my $r = $s->start_file($name);
-		eval { $r->{results} = { $s->analyze($name, $output) } };
+		eval { $r->{results} = $s->analyze($name, $output) };
 	}
 
 	return $s;

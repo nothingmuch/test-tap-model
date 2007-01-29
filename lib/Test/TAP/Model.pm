@@ -31,7 +31,7 @@ sub _handle_bailout {
         
 sub _handle_test {
 	my($self, $line, $type, $totals) = @_;
-	my $curr = $totals->{seen}||0;
+	my $curr = $totals->seen || 0;
 
 	# this is used by pugs' Test.pm, it's rather useful
 	my $pos;
@@ -40,7 +40,7 @@ sub _handle_test {
 		$pos = $2;
 	}
 
-	my %details = %{ $totals->{details}[-1] };
+	my %details = %{ $totals->details->[-1] };
 
 	$self->log_event(
 		type      => 'test',
@@ -48,7 +48,7 @@ sub _handle_test {
 		ok        => $details{ok},
 		actual_ok => $details{actual_ok},
 		str       => $details{ok} # string for people
-		             	? "ok $curr/$totals->{max}"
+		             	? "ok $curr/" . $totals->max
 		             	: "NOK $curr",
 		todo      => ($details{type} eq 'todo'),
 		skip      => ($details{type} eq 'skip'),
@@ -117,6 +117,8 @@ sub _init {
 		my $meth = "_handle_$type";
 		$self->$meth($line, $type, $totals) if $self->can($meth);
 	};
+
+	$s->SUPER::_init( @_ );
 }
 
 sub log_time {
@@ -169,9 +171,9 @@ sub run_test {
 
 	my $test_file = $self->start_file($file);
 	
-	my %results = eval { $self->analyze_file($file) };
-	$test_file->{results} = \%results;
-	delete $test_file->{results}{details};
+	my $results = eval { $self->analyze_file($file) } || Test::Harness::Results->new;
+	$test_file->{results} = $results;
+	$test_file->{results}->details(undef); # we don't need that
 
 	$test_file;
 }

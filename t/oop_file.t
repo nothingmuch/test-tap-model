@@ -6,6 +6,7 @@ use warnings;
 # TODO not very comprehensive
 
 use Test::More tests => 16;
+use Hash::AsObject;
 
 my $m;
 BEGIN { use_ok($m = "Test::TAP::Model::File") }
@@ -21,14 +22,14 @@ isa_ok(my $f = $m->new(my $file = {
 			ok => 0,
 		},
 	],
-	results => my $r = {
+	results => my $r = Hash::AsObject->new({
 		passing => 0,
 		ok => 10,
 		todo => 11,
 		max => 3,
 		seen => 12,
 		skip => 13,
-	}
+	}),
 }), $m);
 
 ok(!$f->ok, "failed");

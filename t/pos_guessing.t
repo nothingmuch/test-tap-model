@@ -11,7 +11,7 @@ BEGIN { use_ok($m = "Test::TAP::Model") }
 isa_ok(my $s = $m->new, $m);
 
 my $f = $s->start_file("foo");
-eval { $f->{results} = { $s->analyze("foo", [split /\n/, <<TAP]) } };
+eval { $f->{results} = $s->analyze("foo", [split /\n/, <<TAP]) };
 1..3
 ok 1 foo <pos:foo.t at line 2, column 1>
 ok 2 foo <pos:file "gorch" line 4>
