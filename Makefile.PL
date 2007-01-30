@@ -9,7 +9,6 @@ WriteMakefile(
 	PREREQ_PM    => {
 		'Test::Harness'  => '2.64',
 		'Test::More'     => '0.53',
-		'Hash::AsObject' => 0,
 		'Method::Alias'  => 0
 	},
 );

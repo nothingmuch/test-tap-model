@@ -6,10 +6,23 @@ use warnings;
 # TODO not very comprehensive
 
 use Test::More tests => 16;
-use Hash::AsObject;
 
 my $m;
 BEGIN { use_ok($m = "Test::TAP::Model::File") }
+
+{
+	package MockRes;
+	sub new {
+		my ( $pkg, %fields ) = @_;
+		bless \%fields, $pkg;
+	}
+
+	sub AUTOLOAD {
+		my $self = shift;
+		my ( $field ) = ( our $AUTOLOAD =~ /([^:]+)$/ );
+		$self->{ $field };
+	}
+}
 
 isa_ok(my $f = $m->new(my $file = {
 	events => [
@@ -22,14 +35,14 @@ isa_ok(my $f = $m->new(my $file = {
 			ok => 0,
 		},
 	],
-	results => my $r = Hash::AsObject->new({
+	results => my $r = MockRes->new(
 		passing => 0,
 		ok => 10,
 		todo => 11,
 		max => 3,
 		seen => 12,
 		skip => 13,
-	}),
+	),
 }), $m);
 
 ok(!$f->ok, "failed");
