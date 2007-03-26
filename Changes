@@ -1,3 +1,7 @@
+0.09
+	- Todd Hepler reported a bug that new_with_* were calling ->SUPER::new
+	  instead of ->new making subclassing and overriding new not work
+
 0.08
 	- Removed the Hash::AsObject dep as it was failing tests
 
