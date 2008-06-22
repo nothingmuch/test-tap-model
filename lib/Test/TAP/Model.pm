@@ -230,8 +230,7 @@ __END__
 
 =head1 NAME
 
-Test::TAP::Model - Accessible (queryable, serializable object) result collector
-for L<Test::Harness::Straps> runs.
+Test::TAP::Model - DEPRECATED Use L<TAP::Harness>, L<TAP::Formatter::HTML>
 
 =head1 SYNOPSIS
 
