@@ -1,3 +1,6 @@
+0.10
+	- depend on Test::Harness::Straps and deprecate
+
 0.09
 	- Todd Hepler reported a bug that new_with_* were calling ->SUPER::new
 	  instead of ->new making subclassing and overriding new not work
