@@ -7,8 +7,8 @@ WriteMakefile(
 	VERSION_FROM => 'lib/Test/TAP/Model.pm',
 	SIGN         => 1,
 	PREREQ_PM    => {
-		'Test::Harness'  => '2.64',
-		'Test::More'     => '0.53',
-		'Method::Alias'  => 0
+		'Test::Harness::Straps' => '0.30',
+		'Test::More' => '0.53',
+		'Method::Alias' => 0
 	},
 );
